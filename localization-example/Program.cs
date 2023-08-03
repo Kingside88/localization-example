@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -24,9 +23,6 @@ builder.Services.AddSwaggerGen(c =>
 // Localization
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddTransient<IStringLocalizer, Localization.StringLocalizer<Resource>>();
-
-//var qq = builder.Services.BuildServiceProvider().GetService<IStringLocalizer>();
-//var ww = qq.GetAllStrings().ToDictionary(x => x.Name, x => x.Value);
 
 builder.Services.AddLocalization();
 builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -74,12 +70,29 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.MapGet("/local/all-strings/default", ([FromServices] IStringLocalizer sharedResourceLocalizer) =>
+app.MapGet("/local/all-strings/default", ([FromServices] IStringLocalizer localizer) =>
 {
-    var allStrings = sharedResourceLocalizer.GetAllStrings();
+    var allStrings = localizer.GetAllStrings();
     var dict = allStrings.ToDictionary(x => x.Name, x => x.Value);
     return Results.Ok(dict);
 })
-.WithName("local");
+.WithName("local-all");
+
+app.MapGet("/local/translate/test", ([FromServices] IStringLocalizer localizer) =>
+{
+    string key = "test";
+    bool resourceNotFound = localizer.GetString(key).ResourceNotFound;
+    if (resourceNotFound)
+    {
+        // Do logic if needed
+
+        // Also you can get the value of the string if the resource was not found. Logic implemented in StringLocalizer
+        string translationIfRecourceNotFound = localizer.GetString(key).Value;
+    }
+
+    var translation = localizer.GetString("test").Value;
+    return Results.Ok(translation);
+})
+.WithName("local-single");
 
 app.Run();
