@@ -66,6 +66,7 @@ SET NOCOUNT ON;
 DECLARE @LanguageId_de INT = (SELECT [LanguageId] FROM [Local].[Language] WHERE [Code2] = 'de')
 DECLARE @LanguageId_en INT = (SELECT [LanguageId] FROM [Local].[Language] WHERE [Code2] = 'en')
 
+-- de Part
 IF NOT EXISTS (SELECT 1 FROM [Local].[Translation] WHERE [LanguageId] = @LanguageId_de AND [Key] = @Key)
 BEGIN
     INSERT INTO [Local].[Translation] (
@@ -86,6 +87,7 @@ BEGIN
     WHERE [LanguageId] = @LanguageId_de AND [Key] = @Key
 END
 
+-- en Part
 IF NOT EXISTS (SELECT 1 FROM [Local].[Translation] WHERE [LanguageId] = @LanguageId_en AND [Key] = @Key)
 BEGIN
     INSERT INTO [Local].[Translation] (
@@ -107,5 +109,8 @@ BEGIN
 END
 GO
 
-EXEC [Local].[spTranslation_Command_Save] 'test', 'Hello from EN', 'Hallo aus DE'
-
+EXEC [Local].[spTranslation_Command_Save] 
+    @Key = 'test', 
+    @Text_de = 'Hello from EN', 
+    @Text_en = 'Hallo aus DE'
+GO
