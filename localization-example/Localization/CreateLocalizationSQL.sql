@@ -111,6 +111,6 @@ GO
 
 EXEC [Local].[spTranslation_Command_Save] 
     @Key = 'test', 
-    @Text_de = 'Hello from EN', 
-    @Text_en = 'Hallo aus DE'
+    @Text_de = 'Hallo aus DE', 
+    @Text_en = 'Hello from EN'
 GO
