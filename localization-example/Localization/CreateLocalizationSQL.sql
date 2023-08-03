@@ -105,5 +105,7 @@ BEGIN
         [Text] = @Text_en
     WHERE [LanguageId] = @LanguageId_en AND [Key] = @Key
 END
+GO
 
+EXEC [Local].[spTranslation_Command_Save] 'test', 'Hello from EN', 'Hallo aus DE'
 
